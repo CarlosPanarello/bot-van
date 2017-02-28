@@ -112,9 +112,11 @@ restService.post('/hook', function (req, res) {
                             console.log('esperarResultado->'+esperarResultado);
                             console.log('antes do wait speech->'+ speech);
                             //POG ¯\_(ツ)_/¯ mas funciona
-                            while(esperarResultado){
-                                //console.log('Esperando');
-                            }
+                            //while(esperarResultado){}
+                            var seconds = 5;
+                            var esperarAte = new Date(new Date().getTime() + seconds * 1000);
+                            while(esperarAte > new Date()){}
+                            
                             console.log('depois do wait speech->'+ speech);
                             console.log('esperarResultado->'+esperarResultado);
                             //var seconds = 5;
@@ -129,7 +131,7 @@ restService.post('/hook', function (req, res) {
             }
         }
 
-        //console.log('result do speech->', speech);
+       console.log('final');
 
         return res.json({
             speech: speech,
