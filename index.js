@@ -8,6 +8,74 @@ const restService = express();
 
 restService.use(bodyParser.json());
 
+const getContent = function(url) {
+  // return new pending promise
+  return new Promise((resolve, reject) => {
+    // select http or https module, depending on reqested url
+    const lib = url.startsWith('https') ? require('https') : require('http');
+    const request = lib.get(url, (response) => {
+      // handle http errors
+      if (response.statusCode < 200 || response.statusCode > 299) {
+         reject(new Error('Failed to load page, status code: ' + response.statusCode));
+       }
+      // temporary data holder
+      const body = [];
+      // on every content chunk, push it to the data array
+      response.on('data', (chunk) => body.push(chunk));
+      // we are done, resolve promise with those joined chunks
+      response.on('end', () => resolve(body.join('')));
+    });
+    // handle connection errors of the request
+    request.on('error', (err) => reject(err))
+    })
+};
+
+function acessoAPIVan(idOri,idDest,callback){
+    var headers = {
+        'User-Agent':       'Super Agent/0.0.1',
+        'Content-Type':     'application/x-www-form-urlencoded'
+    };
+
+    // Configure the request
+    var options = {
+        uri: 'https://vans.labbs.com.br/horario',                                
+        method: 'GET',
+        headers: headers,                                
+        qs: {'idOrigem': idOri, 'idDestino': idDest}
+    };
+    
+    // Start the request
+    request(options, function (error, response, body) {
+        var speech = 'Não foi possível obter os horarios.0';
+
+        if (!error && response.statusCode == 200) {
+            // Print out the response body
+            var info = JSON.parse(body);
+            var horariosVans = '';
+            console.log('REQUEST->'+body);
+            console.log('Info->'+info);
+            console.log('Info-Length->'+info.length);
+
+            for(var i = 0; i < info.length; i++) {
+                horariosVans +=info[i]+ ' ';
+            }
+            console.log('Horarios->' + horariosVans);
+            if ( horariosVans.length > 0){
+                //speech += 'Horarios da van entre ' + descOrigem + ' e '+ descDestino + ' são: '+ horariosVans.trim() + '.';                                  
+                speech = horariosVans+ '.';                                    
+            } else {
+                speech = 'Não foi possível obter os horarios.1';
+            }
+        }else{
+            speech = 'Não foi possível obter os horarios.2';
+            console.log('ERROR->'+error);
+            console.log('status->'+response.statusCode);
+        }
+        console.log('dentro do request speech->'+speech);
+        callback(speech);
+    });
+}
+
 var retornaCodigo = function(entrada){
     entrada = entrada.toUpperCase();
     console.log('Entrada->' + entrada);
@@ -65,64 +133,19 @@ restService.post('/hook', function (req, res) {
                         if(!(!ori || 0 === ori.length) && !(!dest || 0 === dest.length) ){
                             
                             // Set the headers
-                            var headers = {
-                                'User-Agent':       'Super Agent/0.0.1',
-                                'Content-Type':     'application/x-www-form-urlencoded'
-                            };
-
-                            // Configure the request
-                            var options = {
-                                uri: 'https://vans.labbs.com.br/horario',                                
-                                method: 'GET',
-                                headers: headers,                                
-                                qs: {'idOrigem': ori, 'idDestino': dest}
-                            };
-                            speech = 'Não foi possível obter os horarios.0';
-                            // Start the request
+                            //acessoAPIVan(ori,dest,function(entrada){speech = entrada;});
                             
-                            request(options, function (error, response, body) {
-                                if (!error && response.statusCode == 200) {
-                                    // Print out the response body
-                                    var info = JSON.parse(body);
-                                    var horariosVans = '';
-                                    console.log('REQUEST->'+body);
-                                    console.log('Info->'+info);
-                                    console.log('Info-Length->'+info.length);
-                                                                                            
-                                    for(var i = 0; i < info.length; i++) {
-                                        horariosVans +=info[i]+ ' ';
-                                    }
-                                    console.log('Horarios->' + horariosVans);
-                                    if ( horariosVans.length > 0){
-                                        //speech += 'Horarios da van entre ' + descOrigem + ' e '+ descDestino + ' são: '+ horariosVans.trim() + '.';                                  
-                                        speech = horariosVans+ '.';                                    
-                                    } else {
-                                        speech = 'Não foi possível obter os horarios.1';
-                                    }
-                                    //speech += 
-                                    //console.log('REQUEST->'+body);
-                                }else{
-                                    speech = 'Não foi possível obter os horarios.2';
-                                    console.log('ERROR->'+error);
-                                    console.log('status->'+response.statusCode);
-                                }
-                                console.log('dentro do request speech->'+speech);
-                                esperarResultado = false;
-                            });
+                            getContent('https://vans.labbs.com.br/horario?idOrigem=1&idDestino=3')
+                              .then((html) => {
+                                console.log('##### RESPOSTA #####'+html);
+                                speech = html;
+                                })
+                              .catch((err) => console.error(err));
+                            
                             console.log('esperarResultado->'+esperarResultado);
-                            console.log('antes do wait speech->'+ speech);
-                            //POG ¯\_(ツ)_/¯ mas funciona
-                            //while(esperarResultado){}
-                            var seconds = 8;
-                            var esperarAte = new Date(new Date().getTime() + seconds * 1000);
-                            while(esperarAte > new Date()){}
-                            
+                            console.log('antes do wait speech->'+ speech);                            
                             console.log('depois do wait speech->'+ speech);
-                            console.log('esperarResultado->'+esperarResultado);
-                            //var seconds = 5;
-                            //var esperarAte = new Date(new Date().getTime() + seconds * 1000);
-                            //while(esperarAte > new Date()){}
-                            
+                            console.log('esperarResultado->'+esperarResultado);                       
                         } else {
                             speech = 'Precisa de dois parametros';
                         }
@@ -130,7 +153,6 @@ restService.post('/hook', function (req, res) {
                 }
             }
         }
-
        console.log('final');
 
         return res.json({
