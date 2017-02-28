@@ -2,9 +2,10 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const request = require('request');
 
 const restService = express();
+
 restService.use(bodyParser.json());
 
 var retornaCodigo = function(entrada){
@@ -58,9 +59,14 @@ restService.post('/hook', function (req, res) {
                         var ori = retornaCodigo(requestBody.result.parameters.origem);
                         var dest = retornaCodigo(requestBody.result.parameters.destino);
                         
-                        speech += 'teste1: ' + ori  +' teste2: ' + dest;
+                        if(!(!ori || 0 === ori.length) && !(!dest || 0 === dest.length) ){
+                            console.log('REQUEST->'+request.get("https://vans.labbs.com.br/horario?idOrigem="+ori+"&idDestino="+dest));
+                            
+                            speech += 'teste1: ' + ori  +' teste2: ' + dest;
+                        } else {
+                            speech += 'Precisa de dois parametros';
+                        }
                     }                    
-                    
                     //speech += 'action: ' + requestBody.result.action;
                 }
             }
