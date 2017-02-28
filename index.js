@@ -152,7 +152,7 @@ restService.post('/hook', function (req, res) {
                         if(!(!ori || 0 === ori.length) && !(!dest || 0 === dest.length) ){
                             var resposta = syncrequest(
                             'GET',
-                            'https://vans.labbs.com.br/horario?idOrigem=1&idDestino=3
+                            'https://vans.labbs.com.br/horario?idOrigem=1&idDestino=3'
                             );
                             speech = JSON.parse(resposta.getBody());
                             
