@@ -83,20 +83,23 @@ restService.post('/hook', function (req, res) {
                                     // Print out the response body
                                     var info = JSON.parse(body);
                                     var horariosVans = '';
+                                    console.log('REQUEST->'+body);
+                                    console.log('Info->'+info);
+                                    console.log('Info-Length->'+info.length);
                                                                                             
                                     for(var i = 0; i < info.length; i++) {
                                         horariosVans +=info[i]+ ' ';
                                     }
-                                    
+                                    console.log('Horarios' + horariosVans);
                                     if (!(!horariosVans || 0 === horariosVans.length)){
                                         speech += 'Horarios da van entre ' + descOrigem + ' e '+ descDestino + ' são: '+ horariosVans.trim() + '.';
                                     } else {
-                                        speech += 'Não foi possível obter os horarios.';
+                                        speech += 'Não foi possível obter os horarios.1';
                                     }
                                     //speech += 
                                     //console.log('REQUEST->'+body);
                                 }else{
-                                    speech += 'Não foi possível obter os horarios.';
+                                    speech += 'Não foi possível obter os horarios.2';
                                     console.log('ERROR->'+error);
                                     console.log('status->'+response.statusCode);
                                 }
@@ -109,7 +112,7 @@ restService.post('/hook', function (req, res) {
             }
         }
 
-        console.log('result: ', speech);
+        console.log('result do speech->', speech);
 
         return res.json({
             speech: speech,
