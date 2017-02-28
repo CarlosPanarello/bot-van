@@ -60,7 +60,9 @@ restService.post('/hook', function (req, res) {
                         var dest = retornaCodigo(requestBody.result.parameters.destino);
                         
                         if(!(!ori || 0 === ori.length) && !(!dest || 0 === dest.length) ){
-                            console.log('REQUEST->'+request.get("https://vans.labbs.com.br/horario?idOrigem="+ori+"&idDestino="+dest));
+                            var obj = request.get("https://vans.labbs.com.br/horario?idOrigem="+ori+"&idDestino="+dest);
+                            //var obj = JSON.parse(obj.body);
+                            console.log('REQUEST->'+obj.body);
                             
                             speech += 'teste1: ' + ori  +' teste2: ' + dest;
                         } else {
