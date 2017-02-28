@@ -26,6 +26,15 @@ restService.post('/hook', function (req, res) {
                 }
 
                 if (requestBody.result.action) {
+                    console.log('requestBody.result.action' + requestBody.result.action);
+                    if(requestBody.result.action == "horario.van")
+                    {
+                        var ori = requestBody.result.parameters.origem;
+                        var dest = requestBody.result.parameters.destino;
+                        
+                        speech += 'teste1: ' + ori  +' teste2: ' + dest;
+                    }                    
+                    
                     speech += 'action: ' + requestBody.result.action;
                 }
             }
