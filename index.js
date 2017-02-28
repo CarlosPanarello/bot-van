@@ -69,7 +69,7 @@ restService.post('/hook', function (req, res) {
 
                             // Configure the request
                             var options = {
-                                hostname: 'vans.labbs.com.br',
+                                uri: 'vans.labbs.com.br',
                                 method: 'GET',
                                 headers: headers,
                                 path: '/horario',
