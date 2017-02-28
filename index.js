@@ -54,8 +54,10 @@ restService.post('/hook', function (req, res) {
                 if (requestBody.result.action) {
                     console.log('requestBody.result.action->' + requestBody.result.action);
                     if(requestBody.result.action == "horario.van")
-                    {
-                        console.log('retornaCodigo'+ retornaCodigo("Sede VII"));
+                    {                        
+                        var descOrigem = requestBody.result.parameters.origem;
+                        var descDestino = requestBody.result.parameters.destino;
+                        
                         var ori = retornaCodigo(requestBody.result.parameters.origem);
                         var dest = retornaCodigo(requestBody.result.parameters.destino);
                         
@@ -69,8 +71,7 @@ restService.post('/hook', function (req, res) {
 
                             // Configure the request
                             var options = {
-                                uri: 'https://vans.labbs.com.br/horario',
-                                //path: '/horario',
+                                uri: 'https://vans.labbs.com.br/horario',                                
                                 method: 'GET',
                                 headers: headers,                                
                                 qs: {'idOrigem': ori, 'idDestino': dest}
@@ -81,20 +82,29 @@ restService.post('/hook', function (req, res) {
                                 if (!error && response.statusCode == 200) {
                                     // Print out the response body
                                     var info = JSON.parse(body);
+                                    var horariosVans = '';
+                                                                                            
+                                    for(var i = 0; i < info.length; i++) {
+                                        horariosVans +=info[i]+ ' ';
+                                    }
+                                    
+                                    if (!(!horariosVans || 0 === horariosVans.length)){
+                                        speech += 'Horarios da van entre ' + descOrigem + ' e '+ descDestino + ' são: '+ horariosVans.trim() + '.';
+                                    } else {
+                                        speech += 'Não foi possível obter os horarios.';
+                                    }
                                     //speech += 
-                                    console.log('REQUEST->'+body);
+                                    //console.log('REQUEST->'+body);
                                 }else{
+                                    speech += 'Não foi possível obter os horarios.';
                                     console.log('ERROR->'+error);
                                     console.log('status->'+response.statusCode);
                                 }
                             });
-                            
-                            speech += 'teste1: ' + ori  +' teste2: ' + dest;
                         } else {
                             speech += 'Precisa de dois parametros';
                         }
                     }                    
-                    //speech += 'action: ' + requestBody.result.action;
                 }
             }
         }
