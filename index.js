@@ -69,10 +69,10 @@ restService.post('/hook', function (req, res) {
 
                             // Configure the request
                             var options = {
-                                uri: 'vans.labbs.com.br',
+                                uri: 'https://vans.labbs.com.br/horario',
+                                //path: '/horario',
                                 method: 'GET',
-                                headers: headers,
-                                path: '/horario',
+                                headers: headers,                                
                                 qs: {'idOrigem': ori, 'idDestino': dest}
                             };
 
