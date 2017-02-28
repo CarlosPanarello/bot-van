@@ -2,11 +2,13 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const request = require('request');
+const request = require('sync-request');
 
 const restService = express();
 
 restService.use(bodyParser.json());
+
+
 
 var retornaCodigo = function(entrada){
     entrada = entrada.toUpperCase();
@@ -76,7 +78,7 @@ restService.post('/hook', function (req, res) {
                                 headers: headers,                                
                                 qs: {'idOrigem': ori, 'idDestino': dest}
                             };
-
+                            speech = 'Não foi possível obter os horarios.0';
                             // Start the request
                             request(options, function (error, response, body) {
                                 if (!error && response.statusCode == 200) {
@@ -94,10 +96,10 @@ restService.post('/hook', function (req, res) {
                                     if ( horariosVans.length > 0){
                                         //speech += 'Horarios da van entre ' + descOrigem + ' e '+ descDestino + ' são: '+ horariosVans.trim() + '.';
                                     
-                                        speech += horariosVans+ '.';
+                                        speech = horariosVans+ '.';
                                     
                                     } else {
-                                        speech += 'Não foi possível obter os horarios.1';
+                                        speech = 'Não foi possível obter os horarios.1';
                                     }
                                     //speech += 
                                     //console.log('REQUEST->'+body);
@@ -107,8 +109,14 @@ restService.post('/hook', function (req, res) {
                                     console.log('status->'+response.statusCode);
                                 }
                             });
+                            
+                            //POG ¯\_(ツ)_/¯ mas funciona
+                            var seconds = 5;
+                            var esperarAte = new Date(new Date().getTime() + seconds * 1000);
+                            while(esperarAte > new Date()){}
+                            
                         } else {
-                            speech += 'Precisa de dois parametros';
+                            speech = 'Precisa de dois parametros';
                         }
                     }                    
                 }
