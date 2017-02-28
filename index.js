@@ -8,6 +8,7 @@ const restService = express();
 restService.use(bodyParser.json());
 
 var retornaCodigo = function(entrada){
+    console.log('Entrada->' + entrada);
     switch(entrada) {
         case "Sede III":
             return '1';
@@ -49,9 +50,10 @@ restService.post('/hook', function (req, res) {
                 }
 
                 if (requestBody.result.action) {
-                    console.log('requestBody.result.action' + requestBody.result.action);
+                    console.log('requestBody.result.action->' + requestBody.result.action);
                     if(requestBody.result.action == "horario.van")
                     {
+                        console.log('retornaCodigo'+ retornaCodigo("Sede VII"));
                         var ori = retornaCodigo(requestBody.result.parameters.origem);
                         var dest = retornaCodigo(requestBody.result.parameters.destino);
                         
