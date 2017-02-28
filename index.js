@@ -154,7 +154,14 @@ restService.post('/hook', function (req, res) {
                             'GET',
                             'https://vans.labbs.com.br/horario?idOrigem=1&idDestino=3'
                             );
-                            speech = JSON.parse(resposta.getBody());
+                          
+                            var inform = JSON.parse(resposta.getBody());
+                          
+                            for(var i = 0; i < inform.length; i++) {
+                              speech +=inform[i]+ ' ';
+                            }
+                          
+                            //speech = JSON.parse(resposta.getBody());
                             
                             // Set the headers
                           /*
