@@ -82,7 +82,10 @@ restService.post('/hook', function (req, res) {
                                     // Print out the response body
                                     var info = JSON.parse(body);
                                     //speech += 
-                                    console.log('REQUEST->'+body)
+                                    console.log('REQUEST->'+body);
+                                }else{
+                                    console.log('ERROR->'+error);
+                                    console.log('status->'+response.statusCode);
                                 }
                             });
                             
