@@ -8,23 +8,24 @@ const restService = express();
 restService.use(bodyParser.json());
 
 var retornaCodigo = function(entrada){
+    entrada = entrada.toUpperCase();
     console.log('Entrada->' + entrada);
     switch(entrada) {
-        case "Sede III":
+        case "SEDE III":
             return '1';
-        case "Sede IV":
+        case "SEDE IV":
             return '2';            
-        case "Sede VI":
+        case "SEDE VI":
             return '3';
-        case "Sede VII":
+        case "SEDE VII":
             return '4';
-        case "Sede VIII":
+        case "SEDE VIII":
             return '5';
-        case "SIA Shopping":
+        case "SIA SHOPPING":
             return '6';
-        case "Capital Digital":
+        case "CAPITAL DIGITAL":
             return '7';  
-        case "Edifício BB":
+        case "EDIFÍCIO BB":
             return '8';                          
         default:
             return '';
