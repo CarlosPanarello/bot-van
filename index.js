@@ -8,8 +8,6 @@ const restService = express();
 
 restService.use(bodyParser.json());
 
-var esperarResultado = true;
-
 var retornaCodigo = function(entrada){
     entrada = entrada.toUpperCase();
     console.log('Entrada->' + entrada);
@@ -41,7 +39,8 @@ restService.post('/hook', function (req, res) {
 
     try {
         var speech = 'empty speech';
-
+        var esperarResultado = true;
+        
         if (req.body) {
             var requestBody = req.body;
 
@@ -94,27 +93,30 @@ restService.post('/hook', function (req, res) {
                                         horariosVans +=info[i]+ ' ';
                                     }
                                     console.log('Horarios->' + horariosVans);
-                                    if ( info.length > 0){
+                                    if ( horariosVans.length > 0){
                                         //speech += 'Horarios da van entre ' + descOrigem + ' e '+ descDestino + ' são: '+ horariosVans.trim() + '.';                                  
-                                        speech = info+ '.';                                    
+                                        speech = horariosVans+ '.';                                    
                                     } else {
                                         speech = 'Não foi possível obter os horarios.1';
                                     }
                                     //speech += 
                                     //console.log('REQUEST->'+body);
                                 }else{
-                                    speech += 'Não foi possível obter os horarios.2';
+                                    speech = 'Não foi possível obter os horarios.2';
                                     console.log('ERROR->'+error);
                                     console.log('status->'+response.statusCode);
                                 }
+                                console.log('dentro do request speech->'+speech);
                                 esperarResultado = false;
                             });
-                            console.log('antes do wait speech->', speech);
+                            console.log('esperarResultado->'+esperarResultado);
+                            console.log('antes do wait speech->'+ speech);
                             //POG ¯\_(ツ)_/¯ mas funciona
                             while(esperarResultado){
-                                console.log('Esperando');
+                                //console.log('Esperando');
                             }
-                            console.log('depois do wait speech->', speech);
+                            console.log('depois do wait speech->'+ speech);
+                            console.log('esperarResultado->'+esperarResultado);
                             //var seconds = 5;
                             //var esperarAte = new Date(new Date().getTime() + seconds * 1000);
                             //while(esperarAte > new Date()){}
