@@ -156,6 +156,7 @@ restService.post('/hook', function (req, res) {
                             );
                           
                             var inform = JSON.parse(resposta.getBody());
+                            console.log('inform->'+ inform);    
                           
                             for(var i = 0; i < inform.length; i++) {
                               speech +=inform[i]+ ' ';
@@ -180,12 +181,13 @@ restService.post('/hook', function (req, res) {
                                 })
                               .catch((err) => console.error(err));
                             */
-                            console.log('esperarResultado->'+esperarResultado);
-                            console.log('antes do wait speech->'+ speech);                            
-                            console.log('depois do wait speech->'+ speech);
-                            console.log('esperarResultado->'+esperarResultado);                       
+                            //console.log('esperarResultado->'+esperarResultado);
+                            console.log('possui resposta speech->'+ speech);                            
+                            //console.log('depois do wait speech->'+ speech);
+                            //console.log('esperarResultado->'+esperarResultado);                       
                         } else {
-                            speech = 'Precisa de dois parametros';
+                          speech = 'Precisa de dois parametros';
+                          console.log('sem resposta speech->'+ speech);    
                         }
                     }                    
                 }
