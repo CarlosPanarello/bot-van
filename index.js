@@ -36,7 +36,7 @@ restService.post('/hook', function (req, res) {
         return res.json({
             speech: speech,
             displayText: speech,
-            source: 'apiai-webhook-sample'
+            source: 'bot-van-bb'
         });
     } catch (err) {
         console.error("Can't process request", err);
