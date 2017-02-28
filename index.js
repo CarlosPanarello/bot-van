@@ -26,8 +26,8 @@ const getContent = function(url) {
       response.on('end', () => resolve(body.join('')));
     });
     // handle connection errors of the request
-    request.on('error', (err) => reject(err))
-    })
+    request.on('error', (err) => reject(err));
+    });
 };
 
 function acessoAPIVan(idOri,idDest,callback){
@@ -135,10 +135,10 @@ restService.post('/hook', function (req, res) {
                             // Set the headers
                             //acessoAPIVan(ori,dest,function(entrada){speech = entrada;});
                             
-                            getContent('https://vans.labbs.com.br/horario?idOrigem=1&idDestino=3')
+                            speech = getContent('https://vans.labbs.com.br/horario?idOrigem=1&idDestino=3')
                               .then((html) => {
                                 console.log('##### RESPOSTA #####'+html);
-                                speech = html;
+                                return html;
                                 })
                               .catch((err) => console.error(err));
                             
