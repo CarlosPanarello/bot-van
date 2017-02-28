@@ -3,10 +3,27 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
+const syncrequest = require('sync-request');
 
 const restService = express();
 
 restService.use(bodyParser.json());
+
+function synchAPICalls (url) {
+  
+  http.get(url,function(res){
+    var chunks = '';
+    
+    res.on('data',function(d){
+      chunk += d;
+    });
+    
+    res.on('end',function(){
+      results.push(chunks);
+      return results;
+    });
+  });
+}
 
 const getContent = function(url) {
   // return new pending promise
@@ -43,6 +60,7 @@ function acessoAPIVan(idOri,idDest,callback){
         headers: headers,                                
         qs: {'idOrigem': idOri, 'idDestino': idDest}
     };
+  
     
     // Start the request
     request(options, function (error, response, body) {
@@ -73,6 +91,7 @@ function acessoAPIVan(idOri,idDest,callback){
         }
         console.log('dentro do request speech->'+speech);
         callback(speech);
+      
     });
 }
 
@@ -131,17 +150,29 @@ restService.post('/hook', function (req, res) {
                         var dest = retornaCodigo(requestBody.result.parameters.destino);
                         
                         if(!(!ori || 0 === ori.length) && !(!dest || 0 === dest.length) ){
+                            var resposta = syncrequest(
+                            'GET',
+                            'https://vans.labbs.com.br/horario?idOrigem=1&idDestino=3
+                            );
+                            speech = JSON.parse(resposta.getBody());
                             
                             // Set the headers
-                            //acessoAPIVan(ori,dest,function(entrada){speech = entrada;});
-                            
+                          /*
+                            acessoAPIVan(ori,dest,function(entrada){
+                              res.json({
+                                        speech: speech,
+                                        displayText: speech,
+                                        source: 'bot-van-bb'
+                              });
+                              res.send();
+                           
                             speech = getContent('https://vans.labbs.com.br/horario?idOrigem=1&idDestino=3')
                               .then((html) => {
                                 console.log('##### RESPOSTA #####'+html);
                                 return html;
                                 })
                               .catch((err) => console.error(err));
-                            
+                            */
                             console.log('esperarResultado->'+esperarResultado);
                             console.log('antes do wait speech->'+ speech);                            
                             console.log('depois do wait speech->'+ speech);
