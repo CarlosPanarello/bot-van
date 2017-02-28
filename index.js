@@ -7,6 +7,29 @@ const bodyParser = require('body-parser');
 const restService = express();
 restService.use(bodyParser.json());
 
+var retornaCodigo = function(entrada){
+    switch(entrada) {
+        case "Sede III":
+            return '1';
+        case "Sede IV":
+            return '2';            
+        case "Sede VI":
+            return '3';
+        case "Sede VII":
+            return '4';
+        case "Sede VIII":
+            return '5';
+        case "SIA Shopping":
+            return '6';
+        case "Capital Digital":
+            return '7';  
+        case "Edifício BB":
+            return '8';                          
+        default:
+            return '';
+    }
+};
+
 restService.post('/hook', function (req, res) {
 
     console.log('hook request');
@@ -29,13 +52,13 @@ restService.post('/hook', function (req, res) {
                     console.log('requestBody.result.action' + requestBody.result.action);
                     if(requestBody.result.action == "horario.van")
                     {
-                        var ori = requestBody.result.parameters.origem;
-                        var dest = requestBody.result.parameters.destino;
+                        var ori = retornaCodigo(requestBody.result.parameters.origem);
+                        var dest = retornaCodigo(requestBody.result.parameters.destino);
                         
                         speech += 'teste1: ' + ori  +' teste2: ' + dest;
                     }                    
                     
-                    speech += 'action: ' + requestBody.result.action;
+                    //speech += 'action: ' + requestBody.result.action;
                 }
             }
         }
