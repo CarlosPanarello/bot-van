@@ -90,9 +90,12 @@ restService.post('/hook', function (req, res) {
                                     for(var i = 0; i < info.length; i++) {
                                         horariosVans +=info[i]+ ' ';
                                     }
-                                    console.log('Horarios' + horariosVans);
-                                    if (!(!horariosVans || 0 === horariosVans.length)){
-                                        speech += 'Horarios da van entre ' + descOrigem + ' e '+ descDestino + ' são: '+ horariosVans.trim() + '.';
+                                    console.log('Horarios->' + horariosVans);
+                                    if ( horariosVans.length > 0){
+                                        //speech += 'Horarios da van entre ' + descOrigem + ' e '+ descDestino + ' são: '+ horariosVans.trim() + '.';
+                                    
+                                        speech += horariosVans+ '.';
+                                    
                                     } else {
                                         speech += 'Não foi possível obter os horarios.1';
                                     }
