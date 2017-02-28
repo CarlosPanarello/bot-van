@@ -60,9 +60,31 @@ restService.post('/hook', function (req, res) {
                         var dest = retornaCodigo(requestBody.result.parameters.destino);
                         
                         if(!(!ori || 0 === ori.length) && !(!dest || 0 === dest.length) ){
-                            var obj = request.get("https://vans.labbs.com.br/horario?idOrigem="+ori+"&idDestino="+dest);
-                            //var obj = JSON.parse(obj.body);
-                            console.log('REQUEST->'+obj.body);
+                            
+                            // Set the headers
+                            var headers = {
+                                'User-Agent':       'Super Agent/0.0.1',
+                                'Content-Type':     'application/x-www-form-urlencoded'
+                            };
+
+                            // Configure the request
+                            var options = {
+                                url: 'https://vans.labbs.com.br',
+                                method: 'GET',
+                                headers: headers,
+                                path: '/horario',
+                                qs: {'idOrigem': ori, 'idDestino': dest}
+                            };
+
+                            // Start the request
+                            request(options, function (error, response, body) {
+                                if (!error && response.statusCode == 200) {
+                                    // Print out the response body
+                                    var info = JSON.parse(body);
+                                    //speech += 
+                                    console.log('REQUEST->'+body)
+                                }
+                            });
                             
                             speech += 'teste1: ' + ori  +' teste2: ' + dest;
                         } else {
