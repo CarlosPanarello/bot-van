@@ -113,7 +113,7 @@ restService.post('/hook', function (req, res) {
                             console.log('antes do wait speech->'+ speech);
                             //POG ¯\_(ツ)_/¯ mas funciona
                             //while(esperarResultado){}
-                            var seconds = 5;
+                            var seconds = 8;
                             var esperarAte = new Date(new Date().getTime() + seconds * 1000);
                             while(esperarAte > new Date()){}
                             
