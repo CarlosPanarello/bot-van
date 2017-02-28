@@ -8,7 +8,7 @@ const restService = express();
 
 restService.use(bodyParser.json());
 
-
+var esperarResultado = true;
 
 var retornaCodigo = function(entrada){
     entrada = entrada.toUpperCase();
@@ -80,6 +80,7 @@ restService.post('/hook', function (req, res) {
                             };
                             speech = 'Não foi possível obter os horarios.0';
                             // Start the request
+                            
                             request(options, function (error, response, body) {
                                 if (!error && response.statusCode == 200) {
                                     // Print out the response body
@@ -93,11 +94,9 @@ restService.post('/hook', function (req, res) {
                                         horariosVans +=info[i]+ ' ';
                                     }
                                     console.log('Horarios->' + horariosVans);
-                                    if ( horariosVans.length > 0){
-                                        //speech += 'Horarios da van entre ' + descOrigem + ' e '+ descDestino + ' são: '+ horariosVans.trim() + '.';
-                                    
-                                        speech = horariosVans+ '.';
-                                    
+                                    if ( info.length > 0){
+                                        //speech += 'Horarios da van entre ' + descOrigem + ' e '+ descDestino + ' são: '+ horariosVans.trim() + '.';                                  
+                                        speech = info+ '.';                                    
                                     } else {
                                         speech = 'Não foi possível obter os horarios.1';
                                     }
@@ -108,12 +107,17 @@ restService.post('/hook', function (req, res) {
                                     console.log('ERROR->'+error);
                                     console.log('status->'+response.statusCode);
                                 }
+                                esperarResultado = false;
                             });
-                            
+                            console.log('antes do wait speech->', speech);
                             //POG ¯\_(ツ)_/¯ mas funciona
-                            var seconds = 5;
-                            var esperarAte = new Date(new Date().getTime() + seconds * 1000);
-                            while(esperarAte > new Date()){}
+                            while(esperarResultado){
+                                console.log('Esperando');
+                            }
+                            console.log('depois do wait speech->', speech);
+                            //var seconds = 5;
+                            //var esperarAte = new Date(new Date().getTime() + seconds * 1000);
+                            //while(esperarAte > new Date()){}
                             
                         } else {
                             speech = 'Precisa de dois parametros';
@@ -123,7 +127,7 @@ restService.post('/hook', function (req, res) {
             }
         }
 
-        console.log('result do speech->', speech);
+        //console.log('result do speech->', speech);
 
         return res.json({
             speech: speech,
