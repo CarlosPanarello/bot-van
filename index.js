@@ -27,9 +27,9 @@ var retornaCodigo = function(entrada){
         case "CAPITAL DIGITAL":
             return '7';  
         case "EDIFÍCIO BB":
-            return '8';                          
+            return '8';    
         default:
-            return '';
+            return '0';
     }
 };
 
@@ -60,8 +60,12 @@ restService.post('/hook', function (req, res) {
 
                     var ori = retornaCodigo(requestBody.result.parameters.origem);
                     var dest = retornaCodigo(requestBody.result.parameters.destino);
-
-                    if(!(!ori || 0 === ori.length) && !(!dest || 0 === dest.length)){
+                    
+                    if(!ori || 0 === ori.length){
+                        speech += descOrigem + ' não é atendido pela Van.';
+                    } else if(!dest || 0 === dest.length){
+                        speech += descDestino + ' não é atendido pela Van.';
+                    } else {
                         //  sync in node ¯\_(ツ)_/¯ but works !!!
                         var resposta = syncrequest(
                         'GET', 'https://vans.labbs.com.br/horario?idOrigem='+ ori +'&idDestino='+dest + '');
@@ -77,7 +81,7 @@ restService.post('/hook', function (req, res) {
 
                         speech += 'Os horarios da van entre ' + descOrigem + ' para ' + descDestino + ' são ' + texto + '.';
 
-                        console.log('retorno->'+ speech);                            
+                        console.log('retorno->'+ speech);      
                     }
                 }
 
@@ -92,7 +96,7 @@ restService.post('/hook', function (req, res) {
                         for(var i = 0; i < info.length; i++) {
                             texto +=info[i].nome + ', ';
                         }
-                        speech += 'Os locais atendidos pela Van são' + texto.substring(0, str.length - 2) + '.';
+                        speech += 'Os locais atendidos pela Van são ' + texto.substring(0, str.length - 2) + '.';
                         console.log('retorno->'+ speech);    
                     }
                 }
