@@ -102,6 +102,7 @@ restService.post('/hook', function (req, res) {
                     var idLocal = retornaCodigo(requestBody.result.parameters.local); 
                     var encontrou = false;
                     console.log('local id->' + idLocal);
+                    console.log('info->' + info);
                     if(info && info.length > 0){
                         for(var i = 0; i < info.length; i++) {
                             texto +=info[i].nome + ', ';
@@ -113,7 +114,7 @@ restService.post('/hook', function (req, res) {
                         if(encontrou){
                             speech += descLocal + ' é atendido pela van.';
                         } else {
-                            speech += 'Os locais atendidos pela Van são ' + texto.substring(0, str.length - 2) + '.';
+                            speech += 'Os locais atendidos pela Van são ' + texto.substring(0, texto.length - 2) + '.';
                         }
 
                         console.log('retorno->'+ speech);    
