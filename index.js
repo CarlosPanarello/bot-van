@@ -111,7 +111,7 @@ restService.post('/hook', function (req, res) {
                         }
                         
                         if(encontrou){
-                            speech += descLocal ' é atendido pela van.';
+                            speech += descLocal + ' é atendido pela van.';
                         } else {
                             speech += 'Os locais atendidos pela Van são ' + texto.substring(0, str.length - 2) + '.';
                         }
