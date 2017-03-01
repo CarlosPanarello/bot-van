@@ -84,9 +84,9 @@ restService.post('/hook', function (req, res) {
                         speech += 'Os horarios da van entre ' + descOrigem + ' para ' + descDestino + ' são ' + texto + '.';
 
                         console.log('retorno->'+ speech);                       
-                    } else if(!ori || 0 === ori.length && ori > 8){
+                    } else if(!(!ori || 0 === ori.length) && ori > 8){
                         speech += descOrigem + ' não é atendido pela Van.';
-                    } else if (!dest || 0 === dest.length && dest > 8){
+                    } else if (!(!dest || 0 === dest.length) && dest > 8){
                         speech += descDestino + ' não é atendido pela Van.';
                     }
                 }
