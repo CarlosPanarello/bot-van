@@ -28,8 +28,14 @@ var retornaCodigo = function(entrada){
             return '7';  
         case "EDIFÍCIO BB":
             return '8';    
+        case "SEDE I":
+            return '9';   
+        case "SEDE II":
+            return '10';   
+        case "SEDE V":
+            return '11';               
         default:
-            return '0';
+            return '';
     }
 };
 
@@ -61,11 +67,7 @@ restService.post('/hook', function (req, res) {
                     var ori = retornaCodigo(requestBody.result.parameters.origem);
                     var dest = retornaCodigo(requestBody.result.parameters.destino);
                     
-                    if(!ori || 0 === ori.length){
-                        speech += descOrigem + ' não é atendido pela Van.';
-                    } else if(!dest || 0 === dest.length){
-                        speech += descDestino + ' não é atendido pela Van.';
-                    } else {
+                    if(!(!ori || 0 === ori.length)&& ori < 9 && !(!dest || 0 === dest.length) && dest < 9){
                         //  sync in node ¯\_(ツ)_/¯ but works !!!
                         var resposta = syncrequest(
                         'GET', 'https://vans.labbs.com.br/horario?idOrigem='+ ori +'&idDestino='+dest + '');
@@ -81,7 +83,11 @@ restService.post('/hook', function (req, res) {
 
                         speech += 'Os horarios da van entre ' + descOrigem + ' para ' + descDestino + ' são ' + texto + '.';
 
-                        console.log('retorno->'+ speech);      
+                        console.log('retorno->'+ speech);                       
+                    } else if(!ori || 0 === ori.length && ori > 8){
+                        speech += descOrigem + ' não é atendido pela Van.';
+                    } else if (!dest || 0 === dest.length && dest > 8){
+                        speech += descDestino + ' não é atendido pela Van.';
                     }
                 }
 
@@ -92,11 +98,24 @@ restService.post('/hook', function (req, res) {
                     var info = JSON.parse(resposta.getBody());
                     var texto = '';
 
+                    var descLocal = requestBody.result.parameters.local;
+                    var idLocal = retornaCodigo(requestBody.result.parameters.local); 
+                    var encontrou = false;
+                    console.log('local id->' + idLocal);
                     if(info && info.length > 0){
                         for(var i = 0; i < info.length; i++) {
                             texto +=info[i].nome + ', ';
+                            if(!(!idLocal || 0 === idLocal.length) && info[i].id == idLocal ){
+                                encontrou = true;
+                            }
                         }
-                        speech += 'Os locais atendidos pela Van são ' + texto.substring(0, str.length - 2) + '.';
+                        
+                        if(encontrou){
+                            speech += descLocal ' é atendido pela van.';
+                        } else {
+                            speech += 'Os locais atendidos pela Van são ' + texto.substring(0, str.length - 2) + '.';
+                        }
+
                         console.log('retorno->'+ speech);    
                     }
                 }
