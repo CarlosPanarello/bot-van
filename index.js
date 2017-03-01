@@ -67,7 +67,7 @@ restService.post('/hook', function (req, res) {
                     var ori = retornaCodigo(requestBody.result.parameters.origem);
                     var dest = retornaCodigo(requestBody.result.parameters.destino);
                     
-                    if(!(!ori || 0 === ori.length)&& ori < 9 && !(!dest || 0 === dest.length) && dest < 9){
+                    if(!(!ori || 0 === ori.length)&& ori < 9 && !(!dest || 0 === dest.length) && dest < 9 && (dest != ori)){
                         //  sync in node ¯\_(ツ)_/¯ but works !!!
                         var resposta = syncrequest(
                         'GET', 'https://vans.labbs.com.br/horario?idOrigem='+ ori +'&idDestino='+dest + '');
