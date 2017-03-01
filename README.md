@@ -16,6 +16,6 @@ Fork from [Api.ai Webhook Sample](https://github.com/api-ai/apiai-webhoook-sampl
 More info about Api.ai webhooks could be found here:
 [Api.ai Webhook](https://docs.api.ai/docs/webhook)
 
-# What does the service do?
+# What does it do?
 With the parameters origin and destination obtained by chatbot a search is done in other API that returns the bus schedule.
 Other function is to return the places where the bus goes by.
