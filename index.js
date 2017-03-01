@@ -86,7 +86,7 @@ restService.post('/hook', function (req, res) {
                         for(var i = 0; i < info.length; i++) {
                             texto +=info[i]+ ' ';
                         }
-                        if((texto || 0 === texto.length)){
+                        if(!texto || 0 === texto.length){
                            speech += 'Desculpe mas não foi possivel obter os horarios entre ' + descOrigem + ' e ' + descDestino +'.'; 
                         } else {
                             speech += 'Os horarios da van entre ' + descOrigem + ' para ' + descDestino + ' são ' + texto + '.';
