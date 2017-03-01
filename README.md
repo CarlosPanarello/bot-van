@@ -1,12 +1,21 @@
-# Api.ai - sample webhook implementation.
+# Bot-Van-BB Webhook para ChatBots.
 
-This is a really simple webhook implementation that gets Api.ai classification JSON (i.e. a JSON output of Api.ai /query endpoint) and returns a fulfillment response.
+Este é apenas um projeto em node.js para ligar o chatbot da Api.ai com uma outra api de horario de vans.
+Fork do do projeto exemplo [Api.ai Webhook Sample](https://github.com/api-ai/apiai-webhoook-sample)
+
+Para mais informaçoes sobre webhooks acesse [Api.ai Webhook](https://docs.api.ai/docs/webhook)
+
+# O que esse serviço faz?
+A partir dos parametros de origem e destino obtidos pelo chatbot é realizado uma consulta em outra API que retorna os horarios das Vans. 
+Outras perguntas podem retornar quais são as localidades atendidas pelas Vans.
+
+# Bot-Van-BB Webhook for ChatBots.
+It's a simple service using webhook with node.js to connect with chatbot from Api.ai to another schedule bus api.
+Fork from [Api.ai Webhook Sample](https://github.com/api-ai/apiai-webhoook-sample)
 
 More info about Api.ai webhooks could be found here:
 [Api.ai Webhook](https://docs.api.ai/docs/webhook)
 
-# Deploy to:
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
 # What does the service do?
-It's a simple echo service that takes `resolvedQuery` and `action` fields from the Api.ai JSON reponse and echoes them back in into `speech` and `displayTest` fields in the fulfillment JSON.
+With the parameters origin and destination obtained by chatbot is done a search in other API that returns the bus schedule.
+Other funciontion is to return the places where the bus goes by.
