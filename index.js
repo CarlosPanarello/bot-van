@@ -27,7 +27,9 @@ var retornaCodigo = function(entrada){
         case "CAPITAL DIGITAL":
             return '7';  
         case "EDIFÍCIO BB":
-            return '8';    
+            return '8';
+        case "EDIFICIO BB":
+            return '8'; 
         case "SEDE I":
             return '9';   
         case "SEDE II":
