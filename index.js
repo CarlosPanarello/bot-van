@@ -131,11 +131,20 @@ restService.post('/hook', function (req, res) {
 
             }
         }
+        res.json({
+            speech: speech,
+            displayText: speech,
+            source: 'bot-van-bb'
+        });
+        
+        res.send();
+        /*        
         return res.json({
             speech: speech,
             displayText: speech,
             source: 'bot-van-bb'
         });
+        */
     } catch (err) {
         console.error("Não foi possivel obter a informação", err);
         return res.status(400).json({
