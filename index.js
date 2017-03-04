@@ -2,11 +2,32 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const syncrequest = require('sync-request');
 
 const restService = express();
 
 restService.use(bodyParser.json());
+
+const getContent = function(url) {
+  // return new pending promise
+  return new Promise((resolve, reject) => {
+    // select http or https module, depending on reqested url
+    const lib = url.startsWith('https') ? require('https') : require('http');
+    const request = lib.get(url, (response) => {
+      // handle http errors
+      if (response.statusCode < 200 || response.statusCode > 299) {
+         reject(new Error('Failed to load page, status code: ' + response.statusCode));
+       }
+      // temporary data holder
+      const body = [];
+      // on every content chunk, push it to the data array
+      response.on('data', (chunk) => body.push(chunk));
+      // we are done, resolve promise with those joined chunks
+      response.on('end', () => resolve(body.join('')));
+    });
+    // handle connection errors of the request
+    request.on('error', (err) => reject(err));
+    });
+}
 
 var retornaCodigo = function(entrada){
     entrada = entrada.toUpperCase();
@@ -39,7 +60,78 @@ var retornaCodigo = function(entrada){
         default:
             return '';
     }
-};
+}
+
+var retornaDados = function (res,speech) {
+    console.log('retornaDados res->'+ res);
+    res.json({
+            speech: speech,
+            displayText: speech,
+            source: 'bot-van-bb'
+        });
+    res.send();
+}
+
+var retornaDadosErro = function (res,err) {
+    console.log('retornaDadosErro res->'+ res);
+
+    res.status(400).json({
+        status: {
+            code: 400,
+            errorType: err.message
+        }
+    });
+    res.send();
+}
+
+var trataRetornoLocalidades = function(resposta,res){
+    console.log('trataRetornoLocalidades res->'+ res);
+    var info = JSON.parse(resposta.getBody());
+    var texto = '';
+    console.log('info_local->'+ info);
+
+    var descLocal = requestBody.result.parameters.local;
+    var idLocal = retornaCodigo(requestBody.result.parameters.local); 
+    var encontrou = false;
+    console.log('local id->' + idLocal);
+    console.log('info->' + info);
+    if(info && info.length > 0){
+        for(var i = 0; i < info.length; i++) {
+            texto +=info[i].nome + ', ';
+            if(!(!idLocal || 0 === idLocal.length) && info[i].id == idLocal ){
+                encontrou = true;
+            }
+        }
+        
+        if(encontrou){
+            speech += descLocal + ' é atendido pela van.';
+        } else {
+            speech += 'Os locais atendidos pela Van são ' + texto.substring(0, texto.length - 2) + '.';
+        }
+
+        console.log('retorno->'+ speech);    
+        retornaDados(res,speech);
+    }
+}
+
+var trataRetornoHorarios = function(resposta,res){
+    console.log('trataRetornoHorarios res->'+ res);
+    var texto = '';
+    var info = JSON.parse(resposta.getBody());
+
+    console.log('info_hora->'+ info);
+
+    for(var i = 0; i < info.length; i++) {
+        texto +=info[i]+ ' ';
+    }
+    if(!texto || 0 === texto.length){
+        speech += 'Desculpe mas não foi possivel obter os horarios entre ' + descOrigem + ' e ' + descDestino +'.'; 
+    } else {
+        speech += 'Os horarios da van entre ' + descOrigem + ' para ' + descDestino + ' são ' + texto + '.';
+    }
+    console.log('retorno->'+ speech);  
+    retornaDados(res,speech);
+}
 
 restService.post('/hook', function (req, res) {
 
@@ -72,87 +164,32 @@ restService.post('/hook', function (req, res) {
                     console.log('Destino ->'+ dest); 
 
                     if(!(!ori || 0 === ori.length)&& ori < 9 && !(!dest || 0 === dest.length) && dest < 9 && (dest != ori)){
-                        //  sync in node ¯\_(ツ)_/¯ but works !!!
                         console.log('https://vans.labbs.com.br/horario?idOrigem='+ ori +'&idDestino='+dest + ''); 
-                        
-                        var resposta = syncrequest(
-                        'GET', 'https://vans.labbs.com.br/horario?idOrigem='+ ori +'&idDestino='+dest + '');
-                        
-                        var texto = '';
-                        var info = JSON.parse(resposta.getBody());
-
-                        console.log('info->'+ info);    
-
-                        for(var i = 0; i < info.length; i++) {
-                            texto +=info[i]+ ' ';
-                        }
-                        if(!texto || 0 === texto.length){
-                           speech += 'Desculpe mas não foi possivel obter os horarios entre ' + descOrigem + ' e ' + descDestino +'.'; 
-                        } else {
-                            speech += 'Os horarios da van entre ' + descOrigem + ' para ' + descDestino + ' são ' + texto + '.';
-                        }
-                        console.log('retorno->'+ speech);                       
+                        getContent('https://vans.labbs.com.br/horario?idOrigem='+ ori +'&idDestino='+dest + '')
+                            .then((html) => trataRetornoHorarios(html,res), (err) => retornaDadosErro(res,err))
+                            .catch((err) => retornaDadosErro(res,err));
                     } else if(!(!ori || 0 === ori.length) && ori > 8){
                         speech += descOrigem + ' não é atendido pela Van.';
+                        retornaDados(res,speech);
                     } else if (!(!dest || 0 === dest.length) && dest > 8){
                         speech += descDestino + ' não é atendido pela Van.';
+                        retornaDados(res,speech);
                     }
                 }
 
                 //Ação para obter localidades
                 if(requestBody.result.action && requestBody.result.action == "localidades.van"){ 
                     console.log('acao de localidades');                 
-                    var resposta = syncrequest('GET', 'https://vans.labbs.com.br/localidades');
-                    var info = JSON.parse(resposta.getBody());
-                    var texto = '';
-
-                    var descLocal = requestBody.result.parameters.local;
-                    var idLocal = retornaCodigo(requestBody.result.parameters.local); 
-                    var encontrou = false;
-                    console.log('local id->' + idLocal);
-                    console.log('info->' + info);
-                    if(info && info.length > 0){
-                        for(var i = 0; i < info.length; i++) {
-                            texto +=info[i].nome + ', ';
-                            if(!(!idLocal || 0 === idLocal.length) && info[i].id == idLocal ){
-                                encontrou = true;
-                            }
-                        }
-                        
-                        if(encontrou){
-                            speech += descLocal + ' é atendido pela van.';
-                        } else {
-                            speech += 'Os locais atendidos pela Van são ' + texto.substring(0, texto.length - 2) + '.';
-                        }
-
-                        console.log('retorno->'+ speech);    
-                    }
+                    console.log('res->' + res);                 
+                    getContent('https://vans.labbs.com.br/localidades')
+                        .then((html) => trataRetornoLocalidades(html,res), (err) => retornaDadosErro(res,err))
+                        .catch((err) => retornaDadosErro(res,err));
                 }
-
             }
         }
-        res.json({
-            speech: speech,
-            displayText: speech,
-            source: 'bot-van-bb'
-        });
-        
-        res.send();
-        /*        
-        return res.json({
-            speech: speech,
-            displayText: speech,
-            source: 'bot-van-bb'
-        });
-        */
     } catch (err) {
         console.error("Não foi possivel obter a informação", err);
-        return res.status(400).json({
-            status: {
-                code: 400,
-                errorType: err.message
-            }
-        });
+        retornaDadosErro(res,err);
     }
 });
 
