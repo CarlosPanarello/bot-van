@@ -84,18 +84,17 @@ var retornaDadosErro = function (res,err) {
     res.send();
 }
 
-var trataRetornoLocalidades = function(resposta,res){
+var trataRetornoLocalidades = function(resposta,res,descLocal,idLocal){
     console.log('trataRetornoLocalidades res->'+ res);
     console.log(resposta);
     var info = JSON.parse(resposta);
     var texto = '';
-    console.log('info_local->'+ info);
-
-    var descLocal = requestBody.result.parameters.local;
-    var idLocal = retornaCodigo(requestBody.result.parameters.local); 
+    console.log('info->'+ info);
+    console.log('descLocal->'+ descLocal);
+    console.log('idLocal->'+ idLocal);
+  
     var encontrou = false;
-    console.log('local id->' + idLocal);
-    console.log('info->' + info);
+
     if(info && info.length > 0){
         for(var i = 0; i < info.length; i++) {
             texto +=info[i].nome + ', ';
@@ -181,9 +180,11 @@ restService.post('/hook', function (req, res) {
                 //Ação para obter localidades
                 if(requestBody.result.action && requestBody.result.action == "localidades.van"){ 
                     console.log('acao de localidades');                 
-                    console.log('res->' + res);                 
+                    console.log('res->' + res);
+                    var descLocal = requestBody.result.parameters.local;
+                    var idLocal = retornaCodigo(requestBody.result.parameters.local);  
                     getContent('https://vans.labbs.com.br/localidades')
-                        .then((html) => trataRetornoLocalidades(html,res), (err) => retornaDadosErro(res,err))
+                        .then((html) => trataRetornoLocalidades(html,res,descLocal,idLocal), (err) => retornaDadosErro(res,err))
                         .catch((err) => retornaDadosErro(res,err));
                 }
             }
