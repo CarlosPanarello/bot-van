@@ -116,7 +116,7 @@ var trataRetornoLocalidades = function(resposta,res,descLocal,idLocal,speech){
 var trataRetornoHorarios = function(resposta,res,speech,descOrigem,descDestino){
     console.log('trataRetornoHorarios res->'+ res);
     var texto = '';
-    var info = JSON.parse(resposta.getBody());
+    var info = JSON.parse(resposta);
 
     console.log('info_hora->'+ info);
 
