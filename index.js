@@ -86,13 +86,13 @@ var retornaDadosErro = function (res,err,local) {
     res.send();
 }
 
-var trataRetornoLocalidades = function(resposta,res,descLocal,idLocal,requestBody){
+var trataRetornoLocalidades = function(resposta,res,descLocal,idLocal,speech){
     console.log('trataRetornoLocalidades res->'+ res);
     console.log(resposta);
     var info = JSON.parse(resposta);
     var texto = '';
     console.log('info_local->'+ info);
-    console.log('requestBody->' +requestBody);
+    console.log('speech->' +speech);
     console.log('descLocal->'+ descLocal);
     console.log('idLocal->'+ idLocal);
     var encontrou = false;
