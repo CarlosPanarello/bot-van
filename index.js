@@ -72,9 +72,7 @@ var retornaDados = function (res,speech) {
     res.send();
 }
 
-var retornaDadosErro = function (res,err,local) {
-    console.log('retornaDadosErro local->'+ local);
-
+var retornaDadosErro = function (res,err) {
     console.log('retornaDadosErro res->'+ res);
     console.log('retornaDadosErro err->'+ err);
     res.status(400).json({
@@ -105,9 +103,9 @@ var trataRetornoLocalidades = function(resposta,res,descLocal,idLocal,speech){
         }
         
         if(encontrou){
-            speech += descLocal + ' é atendido pela van.';
+            speech =  descLocal.toUpperCase() + ' é atendido pela van.';
         } else {
-            speech += 'Os locais atendidos pela Van são ' + texto.substring(0, texto.length - 2) + '.';
+            speech = 'Os locais atendidos pela Van são ' + texto.substring(0, texto.length - 2) + '.';
         }
 
         console.log('retorno->'+ speech);    
@@ -115,7 +113,7 @@ var trataRetornoLocalidades = function(resposta,res,descLocal,idLocal,speech){
     }
 }
 
-var trataRetornoHorarios = function(resposta,res){
+var trataRetornoHorarios = function(resposta,res,speech,descOrigem,descDestino){
     console.log('trataRetornoHorarios res->'+ res);
     var texto = '';
     var info = JSON.parse(resposta.getBody());
@@ -126,9 +124,9 @@ var trataRetornoHorarios = function(resposta,res){
         texto +=info[i]+ ' ';
     }
     if(!texto || 0 === texto.length){
-        speech += 'Desculpe mas não foi possivel obter os horarios entre ' + descOrigem + ' e ' + descDestino +'.'; 
+        speech = 'Desculpe mas não foi possivel obter os horarios entre ' + descOrigem + ' e ' + descDestino +'.'; 
     } else {
-        speech += 'Os horarios da van entre ' + descOrigem + ' para ' + descDestino + ' são ' + texto + '.';
+        speech = 'Os horarios da van entre ' + descOrigem + ' para ' + descDestino + ' são ' + texto + '.';
     }
     console.log('retorno->'+ speech);  
     retornaDados(res,speech);
@@ -159,16 +157,16 @@ restService.post('/hook', function (req, res) {
                     var descOrigem = requestBody.result.parameters.origem;
                     var descDestino = requestBody.result.parameters.destino;
 
-                    var ori = retornaCodigo(requestBody.result.parameters.origem);
-                    var dest = retornaCodigo(requestBody.result.parameters.destino);
+                    var ori = retornaCodigo(descOrigem);
+                    var dest = retornaCodigo(descDestino);
                     console.log('Origem ->'+ ori); 
                     console.log('Destino ->'+ dest); 
 
                     if(!(!ori || 0 === ori.length)&& ori < 9 && !(!dest || 0 === dest.length) && dest < 9 && (dest != ori)){
                         console.log('https://vans.labbs.com.br/horario?idOrigem='+ ori +'&idDestino='+dest + ''); 
                         getContent('https://vans.labbs.com.br/horario?idOrigem='+ ori +'&idDestino='+dest + '')
-                            .then((html) => trataRetornoHorarios(html,res), (err) => retornaDadosErro(res,err,'horario-P'))
-                            .catch((err) => retornaDadosErro(res,err,'horario-PE'));
+                            .then((html) => trataRetornoHorarios(html,res,speech,descOrigem,descDestino), (err) => retornaDadosErro(res,err))
+                            .catch((err) => retornaDadosErro(res,err));
                     } else if(!(!ori || 0 === ori.length) && ori > 8){
                         speech += descOrigem + ' não é atendido pela Van.';
                         retornaDados(res,speech);
@@ -189,14 +187,14 @@ restService.post('/hook', function (req, res) {
                     console.log('idLocal->' + idLocal);
 
                     getContent('https://vans.labbs.com.br/localidades')
-                        .then((html) => trataRetornoLocalidades(html,res,descLocal,idLocal,requestBody), (err) => retornaDadosErro(res,err,'horario-L'))
-                        .catch((err) => retornaDadosErro(res,err,'horario-LE'));
+                        .then((html) => trataRetornoLocalidades(html,res,descLocal,idLocal,requestBody), (err) => retornaDadosErro(res,err))
+                        .catch((err) => retornaDadosErro(res,err));
                 }
             }
         }
     } catch (err) {
         console.error("Não foi possivel obter a informação", err);
-        retornaDadosErro(res,err,'horario-E');
+        retornaDadosErro(res,err);
     }
 });
 
