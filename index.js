@@ -86,7 +86,8 @@ var retornaDadosErro = function (res,err) {
 
 var trataRetornoLocalidades = function(resposta,res){
     console.log('trataRetornoLocalidades res->'+ res);
-    var info = JSON.parse(resposta.getBody());
+    console.log(resposta);
+    var info = JSON.parse(resposta);
     var texto = '';
     console.log('info_local->'+ info);
 
