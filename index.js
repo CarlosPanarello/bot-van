@@ -97,7 +97,7 @@ var trataRetornoLocalidades = function(resposta,res,descLocal,idLocal,requestBod
     if(info && info.length > 0){
         for(var i = 0; i < info.length; i++) {
             texto +=info[i].nome + ', ';
-            if(!(!idLocal || 0 === idLocal.length) && info[i].id == idLocal ){
+            if(info[i].id == idLocal ){
                 encontrou = true;
             }
         }
@@ -183,8 +183,8 @@ restService.post('/hook', function (req, res) {
                     var descLocal = requestBody.result.parameters.local;
                     var idLocal = retornaCodigo(requestBody.result.parameters.local);   
                     
-                    console.log('local id->' + idLocal);
-                    console.log('info->' + info);
+                    console.log('descLocal->' + descLocal);
+                    console.log('idLocal->' + idLocal);
 
                     getContent('https://vans.labbs.com.br/localidades')
                         .then((html) => trataRetornoLocalidades(html,res,descLocal,idLocal,requestBody), (err) => retornaDadosErro(res,err))
