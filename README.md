@@ -1,4 +1,4 @@
-# Bot-Van-BB Webhook para ChatBots.
+# Bot-Van Webhook para ChatBots.
 
 Este é apenas um projeto em node.js para ligar o chatbot da Api.ai com uma outra api de horario de vans.
 Fork do projeto exemplo [Api.ai Webhook Sample](https://github.com/api-ai/apiai-webhoook-sample)
@@ -9,7 +9,7 @@ Para mais informaçoes sobre webhooks acesse [Api.ai Webhook](https://docs.api.a
 A partir dos parametros de origem e destino obtidos pelo chatbot é realizado uma consulta em outra API que retorna os horarios das Vans. 
 Outras perguntas podem retornar quais são as localidades atendidas pelas Vans.
 
-# Bot-Van-BB Webhook for ChatBots.
+# Bot-Van Webhook for ChatBots.
 It's a simple service using webhook with node.js to connect chatbot from Api.ai to another schedule bus api.
 Fork from [Api.ai Webhook Sample](https://github.com/api-ai/apiai-webhoook-sample)
 
