@@ -1,7 +1,7 @@
 {
   "name": "API.AI webhook demo",
   "description": "API.AI webhook demo",
-  "repository": "https://github.com/CarlosPanarello/bot-van-bb",
+  "repository": "https://github.com/CarlosPanarello/bot-van",
   "logo": "http://xvir.github.io/img/apiai.png",
   "keywords": ["api.ai", "natural language"]
 }
